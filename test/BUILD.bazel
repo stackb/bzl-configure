@@ -3,18 +3,11 @@ load("@build_bazel_rules_nodejs//:index.bzl", "nodejs_binary", "nodejs_test")
 
 ts_project(
     name = "tsconfig",
-    srcs = [":gen_build_files.ts"],
-    source_map = True,
-    deps = ["@npm//:node_modules"],
-)
-
-ts_project(
-    name = "tsconfig-test",
     srcs = [":gen_build_files.spec.ts"],
-    extends = ["//ts_project:tsconfig.json"],
+    extends = ["//src:tsconfig.json"],
     source_map = True,
     deps = [
-        ":tsconfig",
+        "//src:tsconfig",
         "@npm//:node_modules",
     ],
 )
@@ -23,9 +16,9 @@ ts_project(
 nodejs_test(
     name = "test",
     # Note, to make this recursive glob pick up the test files, we use a --deleted_packages trick
-    data = glob(["test/**"]) + [
+    data = glob(["ts_project/**"]) + [
         "//:WORKSPACE",
-        "gen_build_files.js",
+        "//src:tsconfig",
         "@npm//:node_modules",
     ],
     entry_point = "gen_build_files.spec.js",
@@ -40,7 +33,7 @@ nodejs_binary(
     name = "test.accept",
     args = ["accept"],
     data = [
-        "gen_build_files.js",
+        "//src:tsconfig",
         "@npm//:node_modules",
     ],
     entry_point = "gen_build_files.spec.js",

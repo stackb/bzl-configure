@@ -1,0 +1,6 @@
+{
+    "extends": "../src/tsconfig",
+    "references": [
+        {"path": "../src/tsconfig.json"}
+    ]
+}

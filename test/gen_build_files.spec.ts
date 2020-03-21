@@ -1,4 +1,4 @@
-import * as gen from './gen_build_files';
+import * as gen from '../src/gen_build_files';
 import * as fs from 'fs';
 import * as assert from 'assert';
 import * as path from 'path';
@@ -90,12 +90,12 @@ if (process.env['BUILD_WORKING_DIRECTORY'] && process.env['BAZEL_TARGET'] && pro
 } else {
     assert.fail('Missing bazel environment variables');
 }
-const testDir = path.join(wkspDir, 'ts_project/test');
+const testDir = path.join(wkspDir, 'test/ts_project');
 
 copyFile(path.join(wkspDir, 'WORKSPACE'), path.join(tmpDir, 'WORKSPACE'));
 // NB: all tests will run in the same workspace, we rely on them not having isolation failures by reaching outside the root
 fs.readdirSync(testDir).filter(d => isDirectory(path.join(testDir, d))).forEach(testcase => {
-    copyFixture(testDir, path.join(tmpDir, 'ts_project/test'));
-    gen.main([path.join(tmpDir, 'ts_project/test', testcase)]);
-    doAssertions(path.join(tmpDir, 'ts_project/test', testcase));
+    copyFixture(testDir, path.join(tmpDir, 'test/ts_project'));
+    gen.main([path.join(tmpDir, 'test/ts_project', testcase)]);
+    doAssertions(path.join(tmpDir, 'test/ts_project', testcase));
 });

@@ -1,3 +1,1 @@
-exports_files([
-    "WORKSPACE",
-])
+exports_files(["WORKSPACE"])

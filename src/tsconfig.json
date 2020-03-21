@@ -22,8 +22,5 @@
             "../bazel-out/k8-fastbuild/bin",
             "../bazel-out/k8-dbg/bin",
         ],
-    },
-    "files": [
-        "gen_build_files.ts"
-    ]
+    }
 }

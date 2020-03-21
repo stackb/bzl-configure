@@ -1,0 +1,18 @@
+load("@npm_bazel_typescript//:index.bzl", "ts_project")
+
+package(default_visibility = ["//:__subpackages__"])
+
+exports_files(["tsconfig.json"])
+
+ts_project(
+    name = "tsconfig",
+    srcs = [
+        ":buildozer.ts",
+        ":gen_build_files.ts",
+        ":plugin_ts_project.ts",
+        ":types.d.ts",
+        ":util.ts",
+    ],
+    source_map = True,
+    deps = ["@npm//:node_modules"],
+)
