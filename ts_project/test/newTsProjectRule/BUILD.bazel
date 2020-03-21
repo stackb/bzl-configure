@@ -1,0 +1,15 @@
+load("@npm_bazel_typescript//:index.bzl", "ts_project")
+load(":my.bzl", "stuff")
+
+# Assert that this rule isn't clobbered when we generate new rules
+stuff(
+    name = "dont_touch_my_stuff",
+)
+
+# This rule auto-generated and maintained
+ts_project(
+    name = "tsconfig",  # This will use ./tsconfig.json
+    srcs = [":a.ts"],
+    declaration = False,
+    deps = ["@npm//:node_modules"],
+)

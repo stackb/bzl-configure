@@ -1,0 +1,101 @@
+import * as gen from './gen_build_files';
+import * as fs from 'fs';
+import * as assert from 'assert';
+import * as path from 'path';
+import * as os from 'os';
+
+const isDirectory = (d: string) => fs.lstatSync(d).isDirectory();
+
+const mkdirp = (p: string) => {
+    if (!fs.existsSync(p)) {
+        mkdirp(path.dirname(p));
+        fs.mkdirSync(p);
+    }
+}
+
+const mktemp = () => {
+    // otherwise make a new directory for temp files
+    const t = path.join(os.tmpdir(), fs.mkdtempSync('gen_build_files.accept'));
+    mkdirp(t);
+    return t;
+};
+
+function copyFile(src: string, dest: string) {
+    const parsed = path.parse(dest);
+    mkdirp(path.dirname(dest));
+    if (parsed.name === 'BUILD' && parsed.ext === '.in') {
+        fs.copyFileSync(src, dest.slice(0, -3) + '.bazel');
+    }
+    else if (parsed.name === 'BUILD' && parsed.ext === '.bazel') {
+        fs.copyFileSync(src, dest.slice(0, -6) + '.golden');
+    }
+    else {
+        fs.copyFileSync(src, dest);    
+    }        
+}
+
+function copyFixture(input: string, output: string) {
+    fs.readdirSync(input).forEach(f => {
+        if (isDirectory(path.join(input, f))) {
+            copyFixture(path.join(input, f), path.join(output, f));
+        } else {
+            copyFile(path.join(input, f), path.join(output, f));
+        }
+    });
+}
+
+function doAssertions(dir: string) {
+    fs.readdirSync(dir).map(f => path.join(dir, f)).forEach(f => {
+        if (isDirectory(f)) {
+            doAssertions(f);
+        } else {
+            const parsed = path.parse(f);
+            if (parsed.ext === '.golden') {
+                const expected = fs.readFileSync(f, 'utf-8');
+                const actualPath = f.slice(0, -'.golden'.length) + '.bazel';
+                
+                const actual = fs.readFileSync(actualPath, 'utf-8');
+                if (acceptGoldens) {
+                    if (actual !== expected) {
+                        const goldenSrcPath = f.replace(tmpDir, wkspDir).replace(/\.golden$/, '.bazel');
+                        console.log('Writing updated golden file', goldenSrcPath);
+                        fs.writeFileSync(goldenSrcPath, actual);
+                    }
+                } else {
+                    assert.equal(actual, expected, `Delta between ${f} and ${actualPath}
+    Update the golden file:
+    
+        bazel run --config=hide_test_packages ${process.env['TEST_TARGET']}.accept
+    `);
+                }
+            }
+        }
+    });
+}
+
+let acceptGoldens: boolean;
+let tmpDir: string;
+let wkspDir: string;
+// Use presence of this env var to indicate we are in `bazel run`
+if (process.env['BUILD_WORKING_DIRECTORY'] && process.env['BAZEL_TARGET'] && process.env['BAZEL_TARGET'].endsWith('.accept')) {
+    acceptGoldens = true;
+    wkspDir = path.join(process.env['BUILD_WORKING_DIRECTORY']);
+    tmpDir = mktemp();
+} else if (process.env['TEST_TMPDIR'] && process.env['TEST_SRCDIR'] && process.env['BAZEL_WORKSPACE']) {
+    acceptGoldens = false;
+    tmpDir = process.env['TEST_TMPDIR'];
+    wkspDir = path.join(
+        process.env['TEST_SRCDIR'],
+        process.env['BAZEL_WORKSPACE']);
+} else {
+    assert.fail('Missing bazel environment variables');
+}
+const testDir = path.join(wkspDir, 'ts_project/test');
+
+copyFile(path.join(wkspDir, 'WORKSPACE'), path.join(tmpDir, 'WORKSPACE'));
+// NB: all tests will run in the same workspace, we rely on them not having isolation failures by reaching outside the root
+fs.readdirSync(testDir).filter(d => isDirectory(path.join(testDir, d))).forEach(testcase => {
+    copyFixture(testDir, path.join(tmpDir, 'ts_project/test'));
+    gen.main([path.join(tmpDir, 'ts_project/test', testcase)]);
+    doAssertions(path.join(tmpDir, 'ts_project/test', testcase));
+});

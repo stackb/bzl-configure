@@ -1,0 +1,15 @@
+load("@npm_bazel_typescript//:index.bzl", "ts_project")
+
+package(default_visibility = ["//:__subpackages__"])
+
+# This rule auto-generated and maintained
+ts_project(
+    name = "tsconfig-c",  # This will use ./tsconfig-c.json
+    srcs = [":a.ts"],
+    declaration = False,
+    extends = [
+        "//ts_project/test/extendsChain:tsconfig-a.json",
+        "//ts_project/test/extendsChain:tsconfig-b.json",
+    ],
+    deps = ["@npm//:node_modules"],
+)

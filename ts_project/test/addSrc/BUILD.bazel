@@ -1,0 +1,11 @@
+load("@npm_bazel_typescript//:index.bzl", "ts_project")
+
+# This rule auto-generated and maintained
+ts_project(
+    name = "tsconfig",  # This will use ./tsconfig.json
+    # b.ts should be added to this list
+    srcs = [
+        ":a.ts",
+        ":b.ts",
+    ],
+)

@@ -1,0 +1,6 @@
+load(":my.bzl", "stuff")
+
+# Assert that this rule isn't clobbered when we generate new rules
+stuff(
+    name = "dont_touch_my_stuff",
+)

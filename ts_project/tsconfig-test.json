@@ -1,0 +1,7 @@
+{
+    "files": ["gen_build_files.spec.ts"],
+    "extends": "./tsconfig",
+    "references": [
+        {"path": "./tsconfig.json"}
+    ]
+}

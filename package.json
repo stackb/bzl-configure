@@ -1,0 +1,21 @@
+{
+  "name": "bazel-ts-project",
+  "version": "0.1.0",
+  "scripts": {
+    "test": "bazelisk build //... && bazelisk test //ts_project:test --config=hide_test_packages",
+    "bazel:update-deleted-packages": "sed -i.bak \"/--deleted_packages/s#=.*#=$(find ts_project/test/*/* \\( -name BUILD -or -name BUILD.bazel \\) | xargs -n 1 dirname | paste -sd, -)#\" .bazelrc && rm .bazelrc.bak"
+  },
+  "devDependencies": {
+    "@bazel/bazelisk": "1.3.0",
+    "@bazel/buildozer": "^2.2.1",
+    "@bazel/ibazel": "^0.12.2",
+    "@bazel/typescript": "file:bazel-typescript-0.0.0.tgz",
+    "@types/jest": "25.1.4",
+    "@types/node": "^13.9.0",
+    "tslib": "^1.11.1",
+    "typescript": "^3.7.5"
+  },
+  "peerDependencies": {
+    "typescript": ">=3.0"
+  }
+}
