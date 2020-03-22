@@ -9,6 +9,8 @@ ts_project(
     srcs = [
         ":buildozer.ts",
         ":gen_build_files.ts",
+        ":main.ts",
+        ":plugin_pkg_npm.ts",
         ":plugin_ts_project.ts",
         ":types.d.ts",
         ":util.ts",

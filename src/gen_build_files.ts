@@ -3,6 +3,7 @@ import * as path from 'path';
 import {ConfigurationPlugin} from './types';
 import * as buildozer from '@bazel/buildozer';
 import {TsProjectPlugin} from './plugin_ts_project';
+import {PkgNpmPlugin} from './plugin_pkg_npm';
 import {locateWorkspace} from './util';
 
 // In newly created BUILD files, we set a default visibility for convenience
@@ -10,7 +11,7 @@ const default_visibility = '//:__subpackages__';
 
 export function main(args: string[]): 0|1 {
     const root = args[0];
-    const plugins: ConfigurationPlugin[] = [new TsProjectPlugin];
+    const plugins: ConfigurationPlugin[] = [new TsProjectPlugin, new PkgNpmPlugin];
     const wksp = locateWorkspace(root);
     const bazelIgnorePaths: string[] = [];
     const buildozerCmds: buildozer.CommandBatch[] = [];

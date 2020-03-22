@@ -3,7 +3,7 @@ load("@build_bazel_rules_nodejs//:index.bzl", "nodejs_binary", "nodejs_test")
 
 ts_project(
     name = "tsconfig",
-    srcs = [":gen_build_files.spec.ts"],
+    srcs = [":gen_build_files.spec.ts"],  # NB: ts_project/setAttributes/a.ts was omitted since it's in a different package
     extends = ["//src:tsconfig.json"],
     source_map = True,
     deps = [
@@ -16,7 +16,10 @@ ts_project(
 nodejs_test(
     name = "test",
     # Note, to make this recursive glob pick up the test files, we use a --deleted_packages trick
-    data = glob(["ts_project/**"]) + [
+    data = glob([
+        "ts_project/**",
+        "pkg_npm/**",
+    ]) + [
         "//:WORKSPACE",
         "//src:tsconfig",
         "@npm//:node_modules",

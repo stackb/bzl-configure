@@ -90,12 +90,15 @@ if (process.env['BUILD_WORKING_DIRECTORY'] && process.env['BAZEL_TARGET'] && pro
 } else {
     assert.fail('Missing bazel environment variables');
 }
-const testDir = path.join(wkspDir, 'test/ts_project');
+const testDir = path.join(wkspDir, 'test');
 
 copyFile(path.join(wkspDir, 'WORKSPACE'), path.join(tmpDir, 'WORKSPACE'));
 // NB: all tests will run in the same workspace, we rely on them not having isolation failures by reaching outside the root
-fs.readdirSync(testDir).filter(d => isDirectory(path.join(testDir, d))).forEach(testcase => {
-    copyFixture(testDir, path.join(tmpDir, 'test/ts_project'));
-    gen.main([path.join(tmpDir, 'test/ts_project', testcase)]);
-    doAssertions(path.join(tmpDir, 'test/ts_project', testcase));
+fs.readdirSync(testDir).filter(d => isDirectory(path.join(testDir, d))).forEach(pluginDir => {
+    fs.readdirSync(path.join(testDir, pluginDir)).filter(d => isDirectory(path.join(testDir, pluginDir, d))).forEach(testcase => {
+        console.log('TESTCASE', pluginDir, '/', testcase);
+        copyFixture(path.join(testDir, pluginDir), path.join(tmpDir, 'test', pluginDir));
+        gen.main([path.join(tmpDir, 'test', pluginDir, testcase)]);
+        doAssertions(path.join(tmpDir, 'test', pluginDir, testcase));
+    });
 });

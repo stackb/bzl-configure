@@ -2,7 +2,8 @@
   "name": "bazel-ts-project",
   "version": "0.1.0",
   "scripts": {
-    "test": "bazelisk build //... && bazelisk test //test --config=hide_test_packages",
+    "configure": "bazelisk build //src:tsconfig && node --preserve-symlinks-main --preserve-symlinks ./dist/bin/src/main.js",
+    "test": "bazelisk build //... && bazelisk test //test --config=hide_test_packages --test_output=all",
     "bazel:update-deleted-packages": "sed -i.bak \"/--deleted_packages/s#=.*#=$(find test/*/* \\( -name BUILD -or -name BUILD.bazel \\) | xargs -n 1 dirname | paste -sd, -)#\" .bazelrc && rm .bazelrc.bak"
   },
   "devDependencies": {

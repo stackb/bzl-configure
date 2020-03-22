@@ -77,7 +77,7 @@ build --incompatible_strict_action_env
 run --incompatible_strict_action_env
 
 # Update this with npm run bazel:update-deleted-packages
-build:hide_test_packages --deleted_packages=test/ts_project/addSrc,test/ts_project/emitDeclOnly,test/ts_project/extendsChain/subdir,test/ts_project/extendsChain,test/ts_project/newBuildFile,test/ts_project/newTsProjectRule,test/ts_project/overlapSrcs/subdir,test/ts_project/overlapSrcs,test/ts_project/setAttributes
+build:hide_test_packages --deleted_packages=test/pkg_npm/newPkgNpmRule,test/ts_project/addSrc,test/ts_project/emitDeclOnly,test/ts_project/extendsChain/subdir,test/ts_project/extendsChain,test/ts_project/newBuildFile,test/ts_project/newTsProjectRule,test/ts_project/overlapSrcs/subdir,test/ts_project/overlapSrcs,test/ts_project/setAttributes
 
 # Load any settings specific to the current user.
 # .bazelrc.user should appear in .gitignore so that settings are not shared with team members

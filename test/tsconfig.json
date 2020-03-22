@@ -2,5 +2,6 @@
     "extends": "../src/tsconfig",
     "references": [
         {"path": "../src/tsconfig.json"}
-    ]
+    ],
+    "files": ["gen_build_files.spec.ts"]
 }
