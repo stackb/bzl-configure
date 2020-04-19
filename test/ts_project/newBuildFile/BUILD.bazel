@@ -6,7 +6,6 @@ package(default_visibility = ["//:__subpackages__"])
 ts_project(
     name = "tsconfig",  # This will use ./tsconfig.json
     srcs = [":a.ts"],
-    declaration = False,
     source_map = True,
     deps = ["@npm//:node_modules"],
 )

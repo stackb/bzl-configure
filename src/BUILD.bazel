@@ -15,6 +15,7 @@ ts_project(
         ":types.d.ts",
         ":util.ts",
     ],
+    composite = True,
     source_map = True,
     deps = ["@npm//:node_modules"],
 )

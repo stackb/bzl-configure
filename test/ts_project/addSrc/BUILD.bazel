@@ -8,4 +8,5 @@ ts_project(
         ":a.ts",
         ":b.ts",
     ],
+    declaration = True,
 )

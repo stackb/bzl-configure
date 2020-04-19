@@ -6,7 +6,6 @@ package(default_visibility = ["//:__subpackages__"])
 ts_project(
     name = "tsconfig-a",  # This will use ./tsconfig-a.json
     srcs = [],  # NB: subdir/a.ts was omitted since it's in a different package
-    declaration = False,
     deps = ["@npm//:node_modules"],
 )
 
@@ -14,7 +13,6 @@ ts_project(
 ts_project(
     name = "tsconfig-b",  # This will use ./tsconfig-b.json
     srcs = [],  # NB: subdir/a.ts was omitted since it's in a different package
-    declaration = False,
     extends = [":tsconfig-a.json"],
     deps = ["@npm//:node_modules"],
 )

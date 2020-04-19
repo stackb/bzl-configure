@@ -6,6 +6,5 @@ package(default_visibility = ["//:__subpackages__"])
 ts_project(
     name = "tsconfig",  # This will use ./tsconfig.json
     srcs = [],  # NB: subdir/a.ts was omitted since it's in a different package
-    declaration = False,
     deps = ["@npm//:node_modules"],
 )

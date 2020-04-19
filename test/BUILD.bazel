@@ -4,6 +4,7 @@ load("@build_bazel_rules_nodejs//:index.bzl", "nodejs_binary", "nodejs_test")
 ts_project(
     name = "tsconfig",
     srcs = [":gen_build_files.spec.ts"],  # NB: ts_project/setAttributes/a.ts was omitted since it's in a different package
+    composite = True,
     extends = ["//src:tsconfig.json"],
     source_map = True,
     deps = [

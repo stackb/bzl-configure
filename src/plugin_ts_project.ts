@@ -105,9 +105,12 @@ export class TsProjectPlugin implements ConfigurationPlugin {
                 // }
             }
         }
-        // NB: composite implies declaration
-        if (!options.declaration && !options.composite) {
-            tsTargetCommands.push('set declaration False');
+
+        if (options.declaration) {
+            tsTargetCommands.push('set declaration True');
+        }
+        if (options.composite) {
+            tsTargetCommands.push('set composite True');
         }
         if (options.declarationMap) {
             tsTargetCommands.push('set declaration_map True');

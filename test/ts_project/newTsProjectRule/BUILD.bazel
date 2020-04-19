@@ -10,6 +10,5 @@ stuff(
 ts_project(
     name = "tsconfig",  # This will use ./tsconfig.json
     srcs = [":a.ts"],
-    declaration = False,
     deps = ["@npm//:node_modules"],
 )

@@ -6,7 +6,6 @@ package(default_visibility = ["//:__subpackages__"])
 ts_project(
     name = "tsconfig-c",  # This will use ./tsconfig-c.json
     srcs = [":a.ts"],
-    declaration = False,
     extends = [
         "//test/ts_project/extendsChain:tsconfig-a.json",
         "//test/ts_project/extendsChain:tsconfig-b.json",

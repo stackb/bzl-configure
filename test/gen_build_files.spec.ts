@@ -55,14 +55,24 @@ function doAssertions(dir: string) {
                 const actualPath = f.slice(0, -'.golden'.length) + '.bazel';
                 
                 const actual = fs.readFileSync(actualPath, 'utf-8');
+                if (actual === expected) return;
+
                 if (acceptGoldens) {
-                    if (actual !== expected) {
-                        const goldenSrcPath = f.replace(tmpDir, wkspDir).replace(/\.golden$/, '.bazel');
-                        console.log('Writing updated golden file', goldenSrcPath);
-                        fs.writeFileSync(goldenSrcPath, actual);
-                    }
+                    const goldenSrcPath = f.replace(tmpDir, wkspDir).replace(/\.golden$/, '.bazel');
+                    console.log('Writing updated golden file', goldenSrcPath);
+                    fs.writeFileSync(goldenSrcPath, actual);
                 } else {
-                    assert.equal(actual, expected, `Delta between ${f} and ${actualPath}
+                    const unidiff = require('unidiff');
+                    // Generated does not match golden
+                    const diff = unidiff.diffLines(expected, actual);
+                    let prettyDiff = unidiff.formatLines(diff, {aname: f, bname: actualPath});
+                    if (prettyDiff.length > 5000) {
+                      prettyDiff = prettyDiff.substr(0, 5000) + '/n...elided...';
+                    }
+                    throw new Error(`Actual BUILD file doesn't match expected:
+              
+              ${prettyDiff}
+              
     Update the golden file:
     
         bazel run --config=hide_test_packages ${process.env['TEST_TARGET']}.accept
